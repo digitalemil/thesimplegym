@@ -30,13 +30,13 @@ docker push $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-messagelistener-v$VERSI
 cd ..
 
 cp Dockerfile.tmp microservice-messagetransformer/Dockerfile
-cd Microservice-Messagetransformer
+cd microservice-messagetransformer
 docker build -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-messagetransformer-v$VERSION .
 docker push $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-messagetransformer-v$VERSION 
 cd ..
 
 cp Dockerfile.tmp microservice-messagevalidator/Dockerfile
-cd Microservice-messagevalidator
+cd microservice-messagevalidator
 docker build -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-messagevalidator-v$VERSION .
 docker push $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-messagevalidator-v$VERSION 
 cd ..
@@ -48,9 +48,10 @@ docker push $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-loadgenerator-v$VERSION
 cd ..
 
 cd microservice-pmmlevaluator
-export PATH=/Library/Java/JavaVirtualMachines/jdk1.8.0_241.jdk/Contents/Home/bin:$PATH
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_241.jdk/Contents/Home
-/Users/emil/apache-maven-3.6.3/bin/mvn package -DskipTests
+#export PATH=/Library/Java/JavaVirtualMachines/jdk1.8.0_241.jdk/Contents/Home/bin:$PATH
+#export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_241.jdk/Contents/Home
+#/Users/emil/apache-maven-3.6.3/bin/mvn package -DskipTests
+mvn package -DskipTests
 docker build -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-pmmlevaluator-v$VERSION .
 docker push $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-pmmlevaluator-v$VERSION 
 cd ..

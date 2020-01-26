@@ -42,7 +42,7 @@ async function getDataFromListeners() {
         result = await axios.post(h+p, model);
       }
       catch (err) {
-        console.log("Can't get data from Listener: " + err.response.status + " from: " + h + " " + process.env.LISTENER+" "+process.env.DOMAIN);
+        console.log("Can't get data from Listener: " + (h+p) + " " + process.env.LISTENER+" "+process.env.DOMAIN);
         continue;
       }
       p= "/data";
@@ -50,7 +50,7 @@ async function getDataFromListeners() {
         result = await axios.get(h+p);
       }
       catch (err) {
-        console.log("Can't get data from Listener: " + err.response.status + " from: " + h + " " + process.env.LISTENER+" "+process.env.DOMAIN);
+        console.log("Can't get data from Listener: " + (h+p) + " from: " + h + " " + process.env.LISTENER+" "+process.env.DOMAIN);
         continue;
       }
       if (result.status != 200)
@@ -72,11 +72,11 @@ function hrdataMessageHandler(msgs) {
     Object.keys(msgs).forEach(user=> {
       if(messages[user]== undefined || Date.parse(messages[user].event_timestamp)< Date.parse(msgs[user].event_timestamp))
         messages[user]= msgs[user];
-    })
-    msgs1000[n1000]= msgs[user];
-    n1000++;
-    if(n1000== 1000)
+      msgs1000[n1000]= msgs[user];
+      n1000++;
+      if(n1000== 1000)
         n1000= 0;    
+    })
   }
   catch (err) {
     console.log(err + " " + msgs);
@@ -91,15 +91,16 @@ router.get(['/listener.html'], function (req, res, next) {
   res.render('listener', { nl: nlisteners });
 });
 
-router.get(['/1000messages.html'], function (req, res, next) {
+router.get('/1000messages.html', function (req, res, next) {
     for(let i= 0; i< msgs1000.length; i++) {
      for(let j= 0; j< fields.length; j++) {
-        res.write(msgs[i][fields[j]]);
+        res.write(msgs1000[i][fields[j]].toString());
         if(j< fields.length-1)
             res.write(",");
-        res.write("\n");
      }
+     res.write("\n");
     }
+    
   res.statusCode= 200;
   res.end();
 });
