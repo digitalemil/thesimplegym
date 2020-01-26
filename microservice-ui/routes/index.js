@@ -92,8 +92,14 @@ router.get(['/listener.html'], function (req, res, next) {
 });
 
 router.get(['/1000messages.html'], function (req, res, next) {
-    for(let i= 0; i< msgs1000.length; i++)
-        res.write(msgs[i]+"\n");
+    for(let i= 0; i< msgs1000.length; i++) {
+     for(let j= 0; j< fields.length; j++) {
+        res.write(msgs[i][fields[j]]);
+        if(j< fields.length-1)
+            res.write(",");
+        res.write("\n");
+     }
+    }
   res.statusCode= 200;
   res.end();
 });
