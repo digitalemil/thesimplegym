@@ -3,11 +3,12 @@ var router = express.Router();
 var app = express();
 var url = require('url');
 const axios = require("axios");
-var http = require("http");
-var http2 = require("http").Server(app);
 
 let model ="";
 let nlisteners = 3;
+
+let msgs1000= new Array();
+let n1000= 0;
 
 let json = new String(process.env.APPDEF);
 json = json.replace(/\'/g, '\"');
@@ -69,10 +70,13 @@ getDataFromListeners();
 function hrdataMessageHandler(msgs) {
   try {
     Object.keys(msgs).forEach(user=> {
-      let id= msgs[user].id;
-      if(messages[user]== undefined || messages[user].id< id)
+      if(messages[user]== undefined || Date.parse(messages[user].event_timestamp)< Date.parse(msgs[user].event_timestamp))
         messages[user]= msgs[user];
     })
+    msgs1000[n1000]= msgs[user];
+    n1000++;
+    if(n1000== 1000)
+        n1000= 0;    
   }
   catch (err) {
     console.log(err + " " + msgs);
@@ -85,6 +89,13 @@ router.get(['/arch.html'], function (req, res, next) {
 
 router.get(['/listener.html'], function (req, res, next) {
   res.render('listener', { nl: nlisteners });
+});
+
+router.get(['/1000messages.html'], function (req, res, next) {
+    for(let i= 0; i< msgs1000.length; i++)
+        res.write(msgs[i]+"\n");
+  res.statusCode= 200;
+  res.end();
 });
 
 router.get(['/setlisteners'], function (req, res, next) {
