@@ -62,6 +62,7 @@ function processData(sessiondata) {
 		return;
 	
 	session = JSON.parse(sessiondata);
+    console.log(sessiondata);
 	for ( var i = 0; i < MAXWIDGETS; i++) {
 		if (i < session.users.length) {
 			try {

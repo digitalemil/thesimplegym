@@ -128,11 +128,10 @@ function doMySubmit() {
                         }
                         if (req) {
                                 req.onreadystatechange = jsonSent;
-                                req.open("GET", "data?json="+json, true);
+                                req.open("POST", "data", true);
                                 req.setRequestHeader("Content-type", "application/json"); 
-								req.send();                      
-					            //req.send(json);
-                        } else {
+								req.send(json);                      
+					    } else {
                                 alert("req== false");
                         }
                 }

@@ -42,7 +42,8 @@ async function getDataFromListeners() {
         result = await axios.post(h+p, model);
       }
       catch (err) {
-        console.log("Can't get data from Listener: " + (h+p) + " " + process.env.LISTENER+" "+process.env.DOMAIN);
+        console.log("Can't post data to Listener: " + (h+p) + " " + process.env.LISTENER+" "+process.env.DOMAIN);
+        console.log(err);
         continue;
       }
       p= "/data";
@@ -55,6 +56,7 @@ async function getDataFromListeners() {
       }
       if (result.status != 200)
         continue;
+        console.log("processing listener: "+i)
       hrdataMessageHandler(result.data);
     }
     emitData();
@@ -67,15 +69,22 @@ async function getDataFromListeners() {
 };
 getDataFromListeners();
 
+function addMessage(user, msg) {
+    if(user=="me")
+        console.log("adding me: "+JSON.stringify(msg));
+      messages[user]= msg;
+      msgs1000[n1000]= msg;
+      n1000++;
+      if(n1000== 1000)
+        n1000= 0;
+};
+
 function hrdataMessageHandler(msgs) {
   try {
     Object.keys(msgs).forEach(user=> {
-      if(messages[user]== undefined || Date.parse(messages[user].event_timestamp)< Date.parse(msgs[user].event_timestamp))
-        messages[user]= msgs[user];
-      msgs1000[n1000]= msgs[user];
-      n1000++;
-      if(n1000== 1000)
-        n1000= 0;    
+      if(messages[user]== undefined || Date.parse(messages[user].event_timestamp)< Date.parse(msgs[user].event_timestamp)) {
+       addMessage(user, msgs[user]);    
+      }
     })
   }
   catch (err) {
@@ -91,18 +100,37 @@ router.get(['/listener.html'], function (req, res, next) {
   res.render('listener', { nl: nlisteners });
 });
 
+router.get('/jupyter.html', function(req, res, next) {
+  let obj= require("/"+process.env.APPDIR+"/TheGymR.json");
+  let txt= JSON.stringify(obj.notebook)
+  res.setHeader('Content-disposition', 'attachment; filename=TheGymR.ipynb');
+  res.write(txt);
+  res.end();
+});
+
 router.get('/1000messages.html', function (req, res, next) {
-    for(let i= 0; i< msgs1000.length; i++) {
-     for(let j= 0; j< fields.length; j++) {
-        res.write(msgs1000[i][fields[j]].toString());
+    let data= "";
+    data= data.concat("rowid,");
+    for(let j= 0; j< fields.length; j++) {
+        data= data.concat(fields[j].toString());
         if(j< fields.length-1)
-            res.write(",");
+            data= data.concat(",");
+    }
+    data= data.concat("\n");
+    for(let i= 0; i< msgs1000.length; i++) {
+        data= data.concat(i+",");
+     for(let j= 0; j< fields.length; j++) {
+         if(msgs1000[i][fields[j]].toString().includes(","))
+            data= data.concat('"'+msgs1000[i][fields[j]].toString()+'"');
+         else
+            data= data.concat(msgs1000[i][fields[j]].toString());
+        if(j< fields.length-1)
+            data= data.concat(",");
      }
-     res.write("\n");
+     data= data.concat("\n");
     }
     
-  res.statusCode= 200;
-  res.end();
+   res.render('csv', { data:data });
 });
 
 router.get(['/setlisteners'], function (req, res, next) {
@@ -111,7 +139,6 @@ router.get(['/setlisteners'], function (req, res, next) {
   res.render('home', { table: appdef.table, keyspace: appdef.keyspace });
 });
 
-
 router.get(['/version.html'], function (req, res, next) {
   res.render('version', { secret: "", version: "0.0.1" });
 });
@@ -119,7 +146,6 @@ router.get(['/version.html'], function (req, res, next) {
 router.get(['/', '/index.html'], function (req, res, next) {
   res.render('index', { title: appdef.name, name: appdef.name });
 });
-
 
 router.get(['/home.html'], function (req, res, next) {
   res.render('home', { table: appdef.table, keyspace: appdef.keyspace });
@@ -133,8 +159,7 @@ router.get(['/mapdata'], function (req, res, next) {
   let data = new Object();
   data.total = nmessages;
   data.locations = new Array();
-  console.log("Data: " + JSON.stringify(data));
-
+ 
   let j = 0;
   let now = new Date().getTime();
   let maxoffset = 0;
@@ -180,6 +205,26 @@ router.get(['/data.html'], function (req, res, next) {
   res.render('data', { title: appdef.name, name: appdef.name, fields: f, showLocation: appdef.showLocation, getFields: sf });
 });
 
+router.post(['/data'], async function (req, res, next) {
+  let msg = req.body;
+  let h;
+  let p= "/";
+  if (listener == "")
+    h = "http://" + domain;
+  else
+    h = "http://" + listener + "-" + 0 + "." + domain;
+    let result = "";
+  try {
+    result = await axios.post(h+p, msg);
+   // addMessage(msg.user, JSON.parse(msg))
+    console.log("Data: "+msg);
+  }
+  catch (err) {
+    console.log("Can't post data to Listener: " + (h+p) + " " + process.env.LISTENER+" "+process.env.DOMAIN+" "+msg);
+  }
+  res.end();
+});
+
 router.post(['/model'], function (req, res, next) {
   let m = req.body;
   m = m.replace(/\"/g, '\'');
@@ -187,9 +232,10 @@ router.post(['/model'], function (req, res, next) {
   res.end();
 });
 
+
+
 router.get(['/model'], function (req, res, next) {
   res.write(model);
-  console.log(model);
   res.end();
 });
 

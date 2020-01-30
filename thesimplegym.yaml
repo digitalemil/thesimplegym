@@ -32,7 +32,7 @@ spec:
         - name: PMML_EVALUATOR
           value: http://pmmlevaluator 
         - name: DOMAIN
-          value: messagelistener.default.svc.cluster.local
+          value: messagelistener:8081
         - name: PORT
           value: "8081"
         ports:
@@ -85,7 +85,7 @@ spec:
         - name: LISTENER
           value: messagelistener
         - name: DOMAIN
-          value: messagelistener.default.svc.cluster.local:8081
+          value: messagelistener:8081
         - name: APPDIR
           value: /opt/app
         ports:
@@ -271,4 +271,3 @@ spec:
           value: /opt/app
         ports:
         - containerPort: 3000
-
