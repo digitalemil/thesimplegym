@@ -41,6 +41,13 @@ docker build -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-messagevalidator-v$
 docker push $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-messagevalidator-v$VERSION 
 cd ..
 
+
+cp Dockerfile.tmp microservice-gcploadgenerator/Dockerfile	
+cd microservice-gcploadgenerator
+docker build -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-gcploadgenerator-v$VERSION .
+docker push $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-gcploadgenerator-v$VERSION 
+cd ..
+
 cp Dockerfile.tmp microservice-loadgenerator/Dockerfile	
 cd microservice-loadgenerator
 docker build -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-loadgenerator-v$VERSION .

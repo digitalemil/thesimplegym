@@ -1,9 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var app = express();
-var url= require('url');
-var request = require('request');
-var http = require("http");
+const axios = require("axios");
 
 let listener= process.env.LISTENER;
 
@@ -23,7 +20,7 @@ let devices= ["16380", "14321", "15121", "17445", "12444", "16453", "19201", "20
 let hrs= [120, 140, 90, 110, 150, 130, 100, 160, 130, 140, 150, 120 ];
 
 
-function load() {
+async function load() {
 let d= new Date(); 
 let day= d.getUTCDate();
 let daystring= ""+day;
@@ -45,7 +42,7 @@ let daystring= ""+day;
   			if(minute< 10)
     				minutestring="0"+minutestring;
             		    
-			let second= d.getUTCMilliseconds()/1000.0;
+			let second= d.getUTCSeconds()+d.getUTCMilliseconds()/1000.0;
 			let secondstring= ""+second;
   			if(second< 10)
     				secondstring="0"+secondstring
@@ -53,20 +50,26 @@ let daystring= ""+day;
 
 let time= d.getFullYear()+"-"+monthstring+"-"+daystring+"T"+hourstring+":"+minutestring+":"+secondstring+"Z";
 let id= d.getTime();
-console.log("id: "+id);
+
+let h= "http://esiemes-default.appspot.com/data?";
 for(var i= 0; i< 8; i++) {
   bpm= Math.floor(hrs[i]- 10+ Math.random()*20);
- let l= ('{"id":'+ (id+i) + ', "color":"0x80FFFFFF", "location":"' + locations[i] + '", "event_timestamp":"' + time + '", "deviceid":"' + devices[i] + '", "user":"' + names[i] + '", "heartrate":' + bpm + '}');
- console.log(l);
- request.post({
-	headers: {'content-type' : 'application/json'},
-	url:     listener,
-	body:    l
-}, function(err, response, body) {
-	if(err!=null) {
-		console.log(err);
- }
-});
+  try {
+        let u= "password="+process.env.PASSWORD+"&"+
+            "id="+(id+i)+"&"+
+            "color="+"0x80FFFFFF"+"&"+
+            "location="+locations[i]+"&"+
+            "event_timestamp="+time+"&"+
+            "deviceid="+devices[i]+"&"+
+            "user="+names[i]+"&"+
+            "hr="+bpm;
+        console.log(h+u);
+        result = await axios.get(h+u);
+    }
+    catch (err) {
+        console.log("Can't get data to Frontend: "+err);
+        continue;
+    }
 }
   setTimeout(load, 2000);
   

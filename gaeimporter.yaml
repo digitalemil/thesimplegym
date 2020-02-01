@@ -33,3 +33,18 @@ spec:
           value: /opt/app
         ports:
         - containerPort: 80
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: gaeimporter
+spec:
+  selector:
+    app: thegym
+    component: gaeimporter
+    version: 0.0.1  
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer

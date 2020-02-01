@@ -24,7 +24,10 @@ for(let i= 0; i< appdef.fields.length; i++) {
 async function addEvaluatedMessage(msg) {
   try {
     let json= JSON.parse(msg);
-    msgs[json.user]= json;
+    if(msgs[json.user]==undefined ||  Date.parse(json.event_timestamp)> Date.parse(msgs[json.user].event_timestamp)) {
+        msgs[json.user]= json;
+        io.emit("logs", msgs);
+    }
   }
   catch(e)  {
     console.log(e);
@@ -65,7 +68,7 @@ async function transform(msg) {
 async function evaluateMessageWithModel(msg, model) {
   if(model== undefined || model=="")
     return msg;
-    console.log("Evaluating msg with model");
+   // console.log("Evaluating msg with model");
     let jsonmsg= JSON.parse(msg);
     jsonmsg.model= model;
     let result= "";
@@ -96,7 +99,7 @@ async function evaluateMessageWithModel(msg, model) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: "Message Listener", status: laststatus, msg: lastmsg });
+  res.render('index', { title: "Message Listener", status: laststatus });
 });
 
 /* Post model */
@@ -144,7 +147,6 @@ router.post('/', async function(req, res, next) {
 });
 
 router.get('/data', function(req, res, next) {
-  model= req.query.model;
   res.write(JSON.stringify(msgs))
   res.end();
 });
