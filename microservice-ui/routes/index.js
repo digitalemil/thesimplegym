@@ -83,15 +83,19 @@ function hrdataMessageHandler(msgs) {
     console.log(msgs);
   try {
     Object.keys(msgs).forEach(user=> {
-        if(messages[user]!= undefined)
-        console.log(messages[user]); 
-        console.log(msgs[user]);
-        console.log(Date.parse(msgs[user].event_timestamp))
-        if(messages[user]!= undefined)
-            console.log(Date.parse(messages[user].event_timestamp))
+      //  if(messages[user]!= undefined)
+     //   console.log(messages[user]); 
+     //   console.log(msgs[user]);
+     //   console.log(Date.parse(msgs[user].event_timestamp))
+     //   if(messages[user]!= undefined)
+     //       console.log(Date.parse(messages[user].event_timestamp))
       if(messages[user]== undefined || Date.parse(messages[user].event_timestamp)< Date.parse(msgs[user].event_timestamp)) {
        addMessage(user, msgs[user]); 
        console.log("Added msg: "+JSON.stringify(msgs[user]));   
+      }
+      else {
+          console.log("Old msg: "+Date.parse(messages[user].event_timestamp)+" new msg: "+Date.parse(msgs[user].event_timestamp)+" delta: "+(Date.parse(messages[user].event_timestamp)- Date.parse(msgs[user].event_timestamp)))
+          console.log("Message dropped because of age: "+JSON.stringify(msgs[user]));
       }
     })
   }

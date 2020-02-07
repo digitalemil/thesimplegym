@@ -1,0 +1,20 @@
+---
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: thegym-ui
+  namespace: thegym
+spec:
+  template:
+    spec:
+      containers:
+      - image: digitalemil/thesimplegym:microservice-ui-v0.0.1
+        env:
+        - name: APPDEF
+          value: "{'name':'The Gym','showLocation':'true','fields':[{'name':'heartrate','pivot':'true','type':'Integer'},{'name':'user','pivot':false,'type':'String'},{'name':'deviceid','pivot':false,'type':'String'},{'name':'color','pivot':false,'type':'String'},{'name':'id','pivot':'false','type':'Long'},{'name':'location','pivot':'false','type':'Location'},{'name':'event_timestamp','pivot':'false','type':'Date/time'}],'transformer':'%0A%09result%3D%20rawtext%3B%0A%09%09%09%09%09%0A%09%09%09%09%09','topic':'hr','table':'hr','keyspace':'thegym','path':'thegym','creator':'','dockerrepo':'','img':'','vis':'','dash':'','hideloader':'true'}"
+        - name: LISTENER
+          value: messagelistener
+        - name: DOMAIN
+          value: messagelistener:8081
+        - name: APPDIR
+          value: /opt/app"

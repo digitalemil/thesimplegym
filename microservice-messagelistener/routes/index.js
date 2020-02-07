@@ -136,6 +136,9 @@ router.post('/', async function(req, res, next) {
     let m= await handleMessage(lastmsg);
     if(m!= undefined) {
       await addEvaluatedMessage(m);
+    }
+    else {
+        console.log("Message damaged: "+ lastmsg);
     } 
   }
   catch(ex) {

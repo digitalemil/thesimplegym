@@ -110,16 +110,19 @@ kind: Service
 apiVersion: v1
 metadata:
   name: ui
+  labels:
+    app: thegym
+    component: ui
+    version: 0.0.1
 spec:
   selector:
     app: thegym
     component: ui
     version: 0.0.1  
   ports:
-    - protocol: TCP
+    - name: http 
       port: 80
       targetPort: 80
-  type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -224,7 +227,7 @@ spec:
       version: 0.0.1  
   template:
     metadata:
-      name: loader
+      name: pmmlevaluator
       labels:
         app: thegym
         component: pmmlevaluator
@@ -283,8 +286,60 @@ spec:
         - name: LISTENER
           value: http://messagelistener:8081
         - name: PASSWORD
-          value: $PASSWORD
+          value: %PASSWORD%
+        - name: APPDIR
+          value: /opt/app
+        - name: PORT
+          value: "80"
+        ports:
+        - containerPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gaeimporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thegym
+      component: gaeimporter
+      version: 0.0.1     
+  template:
+    metadata:
+      name: gaeimporter
+      labels:
+        app: thegym
+        component: gaeimporter
+        version: 0.0.1   
+    spec:
+      containers:
+      - name: gaeimporter
+        image: eu.gcr.io/esiemes-default/gaeimporter
+        imagePullPolicy: Always
+        env:
+        - name: PORT
+          value: "80"
+        - name: APPDEF
+          value: "{'name':'The Gym','showLocation':'true','fields':[{'name':'heartrate','pivot':'true','type':'Integer'},{'name':'user','pivot':false,'type':'String'},{'name':'deviceid','pivot':false,'type':'String'},{'name':'color','pivot':false,'type':'String'},{'name':'id','pivot':'false','type':'Long'},{'name':'location','pivot':'false','type':'Location'},{'name':'event_timestamp','pivot':'false','type':'Date/time'}],'transformer':'%0A%09result%3D%20rawtext%3B%0A%09%09%09%09%09%0A%09%09%09%09%09','topic':'hr','table':'hr','keyspace':'thegym','path':'thegym','creator':'','dockerrepo':'','img':'','vis':'','dash':'','hideloader':'true'}"
+        - name: LISTENER
+          value: http://messagelistener:8081
         - name: APPDIR
           value: /opt/app
         ports:
-        - containerPort: 3000
+        - containerPort: 80
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: gaeimporter
+spec:
+  selector:
+    app: thegym
+    component: gaeimporter
+    version: 0.0.1  
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer

@@ -63,8 +63,8 @@ for(var i= 0; i< 8; i++) {
             "deviceid="+devices[i]+"&"+
             "user="+names[i]+"&"+
             "hr="+bpm;
-        console.log(h+u);
-        result = await axios.get(h+u);
+    //    console.log(h+u);
+        result = axios.get(h+u);
     }
     catch (err) {
         console.log("Can't get data to Frontend: "+err);
