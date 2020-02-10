@@ -8,6 +8,42 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 
 var app = express();
+var initTracer = require('jaeger-client').initTracer;
+
+// See schema https://github.com/jaegertracing/jaeger-client-node/blob/master/src/configuration.js#L37
+
+var PrometheusMetricsFactory = require('jaeger-client').PrometheusMetricsFactory;
+var promClient = require('prom-client');
+
+var config = {
+  serviceName: 'uimicroservice',
+};
+
+var namespace = config.serviceName;
+var metrics = new PrometheusMetricsFactory(promClient, namespace);
+
+var options = {
+  tags: {
+    'uimicroservice.version': '0.0.1',
+  },
+  metrics: metrics,
+  logger: {
+      info: function logInfo(msg) {
+        console.log('INFO  ', msg);
+      },
+      error: function logError(message
+      ) {
+        console.log('ERROR ', msg);
+      },
+    }
+};
+
+var config = {
+  serviceName: 'ui-microservice',
+};
+var tracer = initTracer(config, options);
+global.tracer= tracer;
+
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
 // view engine setup

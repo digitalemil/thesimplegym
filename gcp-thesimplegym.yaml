@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: messagelistener
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
 spec:
   replicas: 3
   selector:
@@ -73,6 +75,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ui
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
 spec:
   replicas: 1
   selector:
@@ -128,6 +132,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: messagetransformer
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
 spec:
   replicas: 1
   selector:
@@ -173,6 +179,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: messagevalidator
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
 spec:
   replicas: 1
   selector:
@@ -298,6 +306,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gaeimporter
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
 spec:
   replicas: 1
   selector:
