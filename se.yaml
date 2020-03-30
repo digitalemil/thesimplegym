@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: istio-messagelistener-stateful-service-entry
+  namespace: thegym
+spec:
+  hosts:
+  - messagelistener-0.messagelistemer.svc.cluster.local
+  - messagelistener-1.messagelistemer.svc.cluster.local
+  - messagelistener-2.messagelistemer.svc.cluster.local
+  location: MESH_INTERNAL
+  ports:
+  - number: 80
+    name: http
+    protocol: TCP
+  resolution: NONE

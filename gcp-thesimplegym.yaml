@@ -34,11 +34,11 @@ spec:
         - name: PMML_EVALUATOR
           value: http://pmmlevaluator 
         - name: DOMAIN
-          value: messagelistener:8081
+          value: messagelistener:80
         - name: PORT
-          value: "8081"
+          value: "80"
         ports:
-        - containerPort: 8081
+        - containerPort: 80
           name: web
 ---
 apiVersion: v1
@@ -52,10 +52,8 @@ spec:
     version: 0.0.1    
   clusterIP: None
   ports:
-    - protocol: TCP
-      name: "http"
-      port: 80
-      targetPort: 8081 
+  -  name: http-port
+     port: 80
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -90,7 +88,7 @@ spec:
         - name: LISTENER
           value: messagelistener
         - name: DOMAIN
-          value: messagelistener:8081
+          value: messagelistener:80
         - name: APPDIR
           value: /opt/app
         ports:
@@ -280,7 +278,7 @@ spec:
         - name: APPDEF
           value: "{'name':'The Gym','showLocation':'true','fields':[{'name':'heartrate','pivot':'true','type':'Integer'},{'name':'user','pivot':false,'type':'String'},{'name':'deviceid','pivot':false,'type':'String'},{'name':'color','pivot':false,'type':'String'},{'name':'id','pivot':'false','type':'Long'},{'name':'location','pivot':'false','type':'Location'},{'name':'event_timestamp','pivot':'false','type':'Date/time'}],'transformer':'%0A%09result%3D%20rawtext%3B%0A%09%09%09%09%09%0A%09%09%09%09%09','topic':'hr','table':'hr','keyspace':'thegym','path':'thegym','creator':'','dockerrepo':'','img':'','vis':'','dash':'','hideloader':'true'}"
         - name: LISTENER
-          value: http://messagelistener:8081
+          value: http://messagelistener:80
         - name: PASSWORD
           value: %PASSWORD%
         - name: APPDIR
@@ -337,7 +335,7 @@ spec:
         - name: APPDEF
           value: "{'name':'The Gym','showLocation':'true','fields':[{'name':'heartrate','pivot':'true','type':'Integer'},{'name':'user','pivot':false,'type':'String'},{'name':'deviceid','pivot':false,'type':'String'},{'name':'color','pivot':false,'type':'String'},{'name':'id','pivot':'false','type':'Long'},{'name':'location','pivot':'false','type':'Location'},{'name':'event_timestamp','pivot':'false','type':'Date/time'}],'transformer':'%0A%09result%3D%20rawtext%3B%0A%09%09%09%09%09%0A%09%09%09%09%09','topic':'hr','table':'hr','keyspace':'thegym','path':'thegym','creator':'','dockerrepo':'','img':'','vis':'','dash':'','hideloader':'true'}"
         - name: LISTENER
-          value: http://messagelistener:8081
+          value: http://messagelistener:80
         - name: APPDIR
           value: /opt/app
         ports:
