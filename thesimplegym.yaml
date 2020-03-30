@@ -50,7 +50,8 @@ spec:
     version: 0.0.1    
   clusterIP: None
   ports:
-    - protocol: TCP
+    - name: "http"
+      protocol: TCP
       port: 80
       targetPort: 8081 
 ---
@@ -101,7 +102,8 @@ spec:
     component: ui
     version: 0.0.1  
   ports:
-    - protocol: TCP
+    - name: "http"
+      protocol: TCP
       port: 80
       targetPort: 80
   type: LoadBalancer
@@ -147,7 +149,8 @@ spec:
     component: messagetransformer
     version: 0.0.1    
   ports:
-    - protocol: TCP
+    - name: "http"
+      protocol: TCP
       port: 80
       targetPort: 8082
 ---
@@ -192,7 +195,8 @@ spec:
     component: messagevalidator
     version: 0.0.1    
   ports:
-    - protocol: TCP
+    - name: "http"
+      protocol: TCP
       port: 80
       targetPort: 8083
 ---
@@ -235,7 +239,8 @@ spec:
     component: pmmlevaluator
     version: 0.0.1    
   ports:
-    - protocol: TCP
+    - name: "http"
+      protocol: TCP
       port: 80
       targetPort: 8080
 ---
@@ -269,5 +274,23 @@ spec:
           value: http://messagelistener:8081
         - name: APPDIR
           value: /opt/app
+        - name: PORT
+          value: 80
         ports:
-        - containerPort: 3000
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: messageloader
+spec:
+  selector:
+    app: thegym
+    component: messageloader
+    version: 0.0.1    
+  clusterIP: None
+  ports:
+    - name: "http"
+      protocol: TCP
+      port: 80
+      targetPort: 80 

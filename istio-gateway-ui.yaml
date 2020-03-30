@@ -8,7 +8,7 @@ spec:
   servers:
   - port:
       number: 80
-      name: ui.thegym.svc.cluster.local 
+      name: http
       protocol: HTTP 
     hosts:
     - "*"
@@ -30,5 +30,5 @@ spec:
     - destination:
         port:
           number: 80
-        host: ui.thegym.svc.cluster.local 
+        host: ui.thegym.svc.cluster.local
 

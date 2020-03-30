@@ -33,7 +33,7 @@ var options = {
       },
       error: function logError(message
       ) {
-        console.log('ERROR ', msg);
+        console.log('ERROR ', message);
       },
     }
 };

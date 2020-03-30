@@ -2,7 +2,7 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: thegym-ui
+  name: knative-thegym-ui
   namespace: thegym
 spec:
   template:
