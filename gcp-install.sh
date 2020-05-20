@@ -22,7 +22,7 @@ kubectl -n thegym get route knative-thegym-ui
 
 kubectl apply -f istio-gateway-ui.yaml
 
-kubctl -n thegym apply -f se.yaml
+kubectl -n thegym apply -f se.yaml
 
 export IP=$(kubectl get svc istio-ingressgateway --namespace istio-system | grep LoadBalancer | awk '{ print $4 }')
 

@@ -32,7 +32,7 @@ spec:
         - name: MESSAGE_VALIDATOR
           value: http://messagevalidator
         - name: PMML_EVALUATOR
-          value: http://pmmlevaluator 
+          value: http://104.154.217.49 
         - name: DOMAIN
           value: messagelistener:80
         - name: PORT

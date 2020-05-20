@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loader
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thegym
+      component: messageloader
+      version: 0.0.1  
+  template:
+    metadata:
+      name: loader
+      labels:
+        app: thegym
+        component: messageloader
+        version: 0.0.1  
+    spec:
+      containers:
+      - name: loader
+        image: digitalemil/thesimplegym:microservice-loadgenerator-v0.0.1
+        imagePullPolicy: Always
+        env:
+        - name: APPDEF
+          value: "{'name':'The Gym','showLocation':'true','fields':[{'name':'heartrate','pivot':'true','type':'Integer'},{'name':'user','pivot':false,'type':'String'},{'name':'deviceid','pivot':false,'type':'String'},{'name':'color','pivot':false,'type':'String'},{'name':'id','pivot':'false','type':'Long'},{'name':'location','pivot':'false','type':'Location'},{'name':'event_timestamp','pivot':'false','type':'Date/time'}],'transformer':'%0A%09result%3D%20rawtext%3B%0A%09%09%09%09%09%0A%09%09%09%09%09','topic':'hr','table':'hr','keyspace':'thegym','path':'thegym','creator':'','dockerrepo':'','img':'','vis':'','dash':'','hideloader':'true'}"
+        - name: LISTENER
+          value: http://messagelistener:8081
+        - name: APPDIR
+          value: /opt/app
+        - name: PORT
+          value: 80
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: messageloader
+spec:
+  selector:
+    app: thegym
+    component: messageloader
+    version: 0.0.1    
+  clusterIP: None
+  ports:
+    - name: "http"
+      protocol: TCP
+      port: 80
+      targetPort: 80 

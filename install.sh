@@ -5,5 +5,5 @@ kubectl apply -f namespace.yaml
 
 kubectl -n $NAMESPACE apply -f thesimplegym.yaml
 
-kubectl -n $NAMESPACE apply -f gaeimporter.yaml
+#kubectl -n $NAMESPACE apply -f gaeimporter.yaml
 
