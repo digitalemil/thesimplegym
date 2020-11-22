@@ -7,6 +7,7 @@ var http = require("http");
 
 let listener= process.env.LISTENER;
 
+let delta= 2000;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -57,7 +58,7 @@ console.log("id: "+id);
 for(var i= 0; i< 8; i++) {
   bpm= Math.floor(hrs[i]- 10+ Math.random()*20);
  let l= ('{"id":'+ (id+i) + ', "color":"0x80FFFFFF", "location":"' + locations[i] + '", "event_timestamp":"' + time + '", "deviceid":"' + devices[i] + '", "user":"' + names[i] + '", "heartrate":' + bpm + '}');
- console.log(l);
+ console.log("Posting to API: "+l);
  request.post({
 	headers: {'content-type' : 'application/json'},
 	url:     listener,
@@ -66,9 +67,17 @@ for(var i= 0; i< 8; i++) {
 	if(err!=null) {
 		console.log(err);
  }
+ if(response.statusCode== 200) {
+     delta= 2000;
+     console.log("HTTP status: Ok. Delay= 2000");
+ }
+ if(response.statusCode== 429) {
+    delta+= 1000;
+       console.log("HTTP status: "+response.statusCode+": Too many requests. Throttling requests, delay: "+delta);
+ }
 });
 }
-  setTimeout(load, 2000);
+  setTimeout(load, delta);
   
 };
 
