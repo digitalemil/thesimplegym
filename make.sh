@@ -19,38 +19,38 @@ EOF
 
 cp Dockerfile.tmp microservice-ui/Dockerfile		
 cd microservice-ui
-docker build -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-ui-v$VERSION .
+docker build --platform=linux/amd64  -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-ui-v$VERSION .
 docker push $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-ui-v$VERSION 
 cd ..
 
 cp Dockerfile.tmp microservice-messagelistener/Dockerfile
 cd microservice-messagelistener
-docker build -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-messagelistener-v$VERSION .
+docker build   --platform=linux/amd64  -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-messagelistener-v$VERSION .
 docker push $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-messagelistener-v$VERSION 
 cd ..
 
 cp Dockerfile.tmp microservice-messagetransformer/Dockerfile
 cd microservice-messagetransformer
-docker build -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-messagetransformer-v$VERSION .
+docker build   --platform=linux/amd64  -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-messagetransformer-v$VERSION .
 docker push $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-messagetransformer-v$VERSION 
 cd ..
 
 cp Dockerfile.tmp microservice-messagevalidator/Dockerfile
 cd microservice-messagevalidator
-docker build -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-messagevalidator-v$VERSION .
+docker build   --platform=linux/amd64  -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-messagevalidator-v$VERSION .
 docker push $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-messagevalidator-v$VERSION 
 cd ..
 
 
 cp Dockerfile.tmp microservice-gcploadgenerator/Dockerfile	
 cd microservice-gcploadgenerator
-docker build -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-gcploadgenerator-v$VERSION .
+docker build   --platform=linux/amd64  -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-gcploadgenerator-v$VERSION .
 docker push $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-gcploadgenerator-v$VERSION 
 cd ..
 
 cp Dockerfile.tmp microservice-loadgenerator/Dockerfile	
 cd microservice-loadgenerator
-docker build -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-loadgenerator-v$VERSION .
+docker build   --platform=linux/amd64  -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-loadgenerator-v$VERSION .
 docker push $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-loadgenerator-v$VERSION 
 cd ..
 
@@ -59,7 +59,7 @@ cd microservice-pmmlevaluator
 #export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_241.jdk/Contents/Home
 #/Users/emil/apache-maven-3.6.3/bin/mvn package -DskipTests
 mvn package -DskipTests
-docker build -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-pmmlevaluator-v$VERSION .
+docker build   --platform=linux/amd64  -t $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-pmmlevaluator-v$VERSION .
 docker push $DOCKERHUB_USER/$DOCKERHUB_REPO:microservice-pmmlevaluator-v$VERSION 
 cd ..
 

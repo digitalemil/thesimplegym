@@ -6,43 +6,29 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
-
+// Prometheus Client integration 
+const prom_client = require('prom-client');
+const defaultLabels = { service: 'ui' };
+const register = prom_client.register;
+register.setDefaultLabels(defaultLabels);
 var app = express();
-var initTracer = require('jaeger-client').initTracer;
 
-// See schema https://github.com/jaegertracing/jaeger-client-node/blob/master/src/configuration.js#L37
+prom_client.collectDefaultMetrics({ register });
+app.get('/metrics', async (_req, res) => {
+  try {
+    res.set('Content-Type', register.contentType);
+    res.end(await register.metrics());
+  } catch (err) {
+    res.status(500).end(err);
+  }
+});
 
-var PrometheusMetricsFactory = require('jaeger-client').PrometheusMetricsFactory;
-var promClient = require('prom-client');
 
 var config = {
   serviceName: 'uimicroservice',
 };
 
 var namespace = config.serviceName;
-var metrics = new PrometheusMetricsFactory(promClient, namespace);
-
-var options = {
-  tags: {
-    'uimicroservice.version': '0.0.1',
-  },
-  metrics: metrics,
-  logger: {
-      info: function logInfo(msg) {
-        console.log('INFO  ', msg);
-      },
-      error: function logError(message
-      ) {
-        console.log('ERROR ', message);
-      },
-    }
-};
-
-var config = {
-  serviceName: 'ui-microservice',
-};
-var tracer = initTracer(config, options);
-global.tracer= tracer;
 
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 

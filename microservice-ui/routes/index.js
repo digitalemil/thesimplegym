@@ -30,7 +30,7 @@ let domain = process.env.DOMAIN;
 
 async function getDataFromListeners() {
   try {
-    const span = global.tracer.startSpan("getDataFromListeners");
+   // const span = global.tracer.startSpan("getDataFromListeners");
     for (let i = 0; i < nlisteners; i++) {
       let h;
       let p= "/model";
@@ -62,7 +62,7 @@ async function getDataFromListeners() {
     }
     emitData();
     setTimeout(getDataFromListeners, 500);
-    span.finish();
+   // span.finish();
   }
   catch (ex) {
     console.log(ex);
@@ -265,7 +265,7 @@ function emitData() {
 };
 
 function sessionData() {
-  const span = global.tracer.startSpan("sessionData");
+ // const span = global.tracer.startSpan("sessionData");
 
   let ret = "{\"session\":{\"begincomment\":null,\"dayssince01012012\":0,\"dummy\":null,\"endcomment\":null,\"ended\":null,\"groupid\":{\"id\":1,\"name\":\"Default\"},\"id\":0,\"start\":0},\"users\":[";
 
@@ -304,7 +304,7 @@ function sessionData() {
     ret += "{\"calories\":\"\",\"color\":\"" + color + "\",\"hr\":\"" + hr + "\",\"name\":\"" + user + "\",\"recovery\":\"\",\"deviceid\":\"" + deviceid + "\"}";
   }
   ret = ret + "]}";
-  span.finish();
+  //span.finish();
   return ret;
 };
 module.exports = router;

@@ -13,9 +13,9 @@
     "debug": "^4.1.1",
     "ejs": "~2.5.2",
     "express": "^4.17.1",
-    "jaeger-client": "^3.17.1",
     "morgan": "^1.9.1",
     "serve-favicon": "^2.5.0",
+    "prom-client": "^13.0.1",
     "socket.io": "^2.2.0"
   }
 }

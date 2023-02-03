@@ -9,35 +9,24 @@ var bodyParser = require('body-parser');
 
 console.log("Microservice Message Listener starting.")
 var index = require('./routes/index');
-
-
 var app = express();
-var initJaegerTracer = require("jaeger-client").initTracer;
 
-function initTracer(serviceName) {
-  var config = {
-    serviceName: serviceName,
-    sampler: {
-      type: "const",
-      param: 1,
-    },
-    reporter: {
-      logSpans: true,
-    },
-  };
-  var options = {
-    logger: {
-      info: function logInfo(msg) {
-        console.log("INFO ", msg);
-      },
-      error: function logError(msg) {
-        console.log("ERROR", msg);
-      },
-    },
-  };
-  return initJaegerTracer(config, options);
-}
-initTracer("listener");
+// Prometheus Client integration 
+const prom_client = require('prom-client');
+const defaultLabels = { service: 'listener' };
+const register = prom_client.register;
+register.setDefaultLabels(defaultLabels);
+
+prom_client.collectDefaultMetrics({ register });
+app.get('/metrics', async (_req, res) => {
+  try {
+    res.set('Content-Type', register.contentType);
+    res.end(await register.metrics());
+  } catch (err) {
+    res.status(500).end(err);
+  }
+});
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
